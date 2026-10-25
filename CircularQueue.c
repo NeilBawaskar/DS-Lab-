@@ -13,19 +13,20 @@ int main()
 
         if (choice == 1)
         {
-            if (rear == MAX - 1)
+            if ((rear + 1) % MAX == front)
                 printf("Queue Overflow\n");
             else
             {
-                printf("Enter Job ID: ");
+                printf("Enter value: ");
                 scanf("%d", &x);
 
                 if (front == -1)
                     front = 0;
 
-                rear++;
+                rear = (rear + 1) % MAX;
                 queue[rear] = x;
-                printf("Job added\n");
+
+                printf("Value added\n");
             }
         }
 
@@ -35,12 +36,12 @@ int main()
                 printf("Queue Underflow\n");
             else
             {
-                printf("Job %d processed\n", queue[front]);
+                printf("Deleted: %d\n", queue[front]);
 
                 if (front == rear)
                     front = rear = -1;
                 else
-                    front++;
+                    front = (front + 1) % MAX;
             }
         }
 
@@ -50,8 +51,17 @@ int main()
                 printf("Queue is empty\n");
             else
             {
-                for (i = front; i <= rear; i++)
+                i = front;
+
+                while (1)
+                {
                     printf("%d ", queue[i]);
+
+                    if (i == rear)
+                        break;
+
+                    i = (i + 1) % MAX;
+                }
 
                 printf("\n");
             }

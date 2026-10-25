@@ -1,158 +1,109 @@
+```c
 #include <stdio.h>
+
 int main()
 {
-    int a[10][10];
-    int sparse[100][3], transpose[100][3], fast[100][3];
-    int rowTerms[10], startPos[10];
-    int r1, c1;
-    int i, j, k;
-    int count = 0, noncount = 0;
-    int choice;
-    printf("Enter the number of rows: ");
-    scanf("%d", &r1);
-    printf("Enter the number of columns: ");
-    scanf("%d", &c1);
-    printf("Enter the elements of matrix:\n");
-    for(i=0;i<r1;i++)
-    {
-        for(j=0;j<c1;j++)
+    int a[10][10], s[100][3], t[100][3], f[100][3];
+    int r, c, i, j, k, n = 0, ch;
+    int count[10] = {0}, pos[10];
+
+    printf("Enter rows and columns: ");
+    scanf("%d%d", &r, &c);
+
+    printf("Enter matrix elements:\n");
+    for(i = 0; i < r; i++)
+        for(j = 0; j < c; j++)
         {
-            scanf("%d",&a[i][j]);
+            scanf("%d", &a[i][j]);
+            if(a[i][j] != 0)
+                n++;
         }
-    }
 
-    for(i=0;i<r1;i++)
-    {
-        for(j=0;j<c1;j++)
-        {
-            if(a[i][j]!=0)
-                noncount++;
-            else
-                count++;
-        }
-    }
-    printf("\nNon-zero elements = %d\n",noncount);
-    printf("Zero elements = %d\n",count);
+    s[0][0] = r;
+    s[0][1] = c;
+    s[0][2] = n;
 
-    sparse[0][0]=r1;
-    sparse[0][1]=c1;
-    sparse[0][2]=noncount;
-
-    k=1;
-
-    for(i=0;i<r1;i++)
-    {
-        for(j=0;j<c1;j++)
-        {
-            if(a[i][j]!=0)
+    k = 1;
+    for(i = 0; i < r; i++)
+        for(j = 0; j < c; j++)
+            if(a[i][j] != 0)
             {
-                sparse[k][0]=i;
-                sparse[k][1]=j;
-                sparse[k][2]=a[i][j];
+                s[k][0] = i;
+                s[k][1] = j;
+                s[k][2] = a[i][j];
                 k++;
             }
-        }
-    }
 
     do
     {
-        printf("\n------ MENU ------\n");
-        printf("1. Display Triplet Form\n");
-        printf("2. Simple Transpose\n");
-        printf("3. Fast Transpose\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d",&choice);
+        printf("\n1.Triplet\n2.Simple Transpose\n3.Fast Transpose\n4.Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &ch);
 
-        switch(choice)
+        if(ch == 1)
         {
-            case 1:
-                printf("\nTriplet Representation:\n");
-                for(i=0;i<=noncount;i++)
-                {
-                    printf("%d\t%d\t%d\n",
-                    sparse[i][0],
-                    sparse[i][1],
-                    sparse[i][2]);
-                }
-                break;
-            case 2:
-                transpose[0][0]=sparse[0][1];
-                transpose[0][1]=sparse[0][0];
-                transpose[0][2]=sparse[0][2];
-
-                k=1;
-
-                for(i=0;i<c1;i++)
-                {
-                    for(j=1;j<=noncount;j++)
-                    {
-                        if(sparse[j][1]==i)
-                        {
-                            transpose[k][0]=sparse[j][1];
-                            transpose[k][1]=sparse[j][0];
-                            transpose[k][2]=sparse[j][2];
-                            k++;
-                        }
-                    }
-                }
-
-                printf("\nSimple Transpose:\n");
-                for(i=0;i<=noncount;i++)
-                {
-                    printf("%d\t%d\t%d\n",
-                    transpose[i][0],
-                    transpose[i][1],
-                    transpose[i][2]);
-                }
-
-                break;
-            case 3:
-                fast[0][0]=sparse[0][1];
-                fast[0][1]=sparse[0][0];
-                fast[0][2]=sparse[0][2];
-
-                for(i=0;i<c1;i++)
-                    rowTerms[i]=0;
-
-                for(i=1;i<=noncount;i++)
-                    rowTerms[sparse[i][1]]++;
-
-                startPos[0]=1;
-
-                for(i=1;i<c1;i++)
-                    startPos[i]=startPos[i-1]+rowTerms[i-1];
-
-                for(i=1;i<=noncount;i++)
-                {
-                    int pos=startPos[sparse[i][1]];
-
-                    fast[pos][0]=sparse[i][1];
-                    fast[pos][1]=sparse[i][0];
-                    fast[pos][2]=sparse[i][2];
-
-                    startPos[sparse[i][1]]++;
-                }
-
-                printf("\nFast Transpose:\n");
-                for(i=0;i<=noncount;i++)
-                {
-                    printf("%d\t%d\t%d\n",
-                    fast[i][0],
-                    fast[i][1],
-                    fast[i][2]);
-                }
-
-                break;
-            case 4:
-                printf("Program Ended.\n");
-                break;
-
-            default:
-                printf("Invalid Choice!\n");
+            for(i = 0; i <= n; i++)
+                printf("%d\t%d\t%d\n", s[i][0], s[i][1], s[i][2]);
         }
 
-    }while(choice!=4);
+        else if(ch == 2)
+        {
+            t[0][0] = c;
+            t[0][1] = r;
+            t[0][2] = n;
+
+            k = 1;
+            for(i = 0; i < c; i++)
+                for(j = 1; j <= n; j++)
+                    if(s[j][1] == i)
+                    {
+                        t[k][0] = s[j][1];
+                        t[k][1] = s[j][0];
+                        t[k][2] = s[j][2];
+                        k++;
+                    }
+
+            for(i = 0; i <= n; i++)
+                printf("%d\t%d\t%d\n", t[i][0], t[i][1], t[i][2]);
+        }
+
+        else if(ch == 3)
+        {
+            f[0][0] = c;
+            f[0][1] = r;
+            f[0][2] = n;
+
+            for(i = 0; i < c; i++)
+                count[i] = 0;
+
+            for(i = 1; i <= n; i++)
+                count[s[i][1]]++;
+
+            pos[0] = 1;
+            for(i = 1; i < c; i++)
+                pos[i] = pos[i-1] + count[i-1];
+
+            for(i = 1; i <= n; i++)
+            {
+                k = pos[s[i][1]];
+                f[k][0] = s[i][1];
+                f[k][1] = s[i][0];
+                f[k][2] = s[i][2];
+                pos[s[i][1]]++;
+            }
+
+            for(i = 0; i <= n; i++)
+                printf("%d\t%d\t%d\n", f[i][0], f[i][1], f[i][2]);
+        }
+
+        else if(ch == 4)
+            printf("Program Ended\n");
+
+        else
+            printf("Invalid choice\n");
+
+    } while(ch != 4);
 
     return 0;
 }
+```

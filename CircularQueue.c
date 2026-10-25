@@ -46,27 +46,22 @@ int main()
         }
 
         else if (choice == 3)
+{
+    if (front == -1)
+        printf("Queue is empty\n");
+    else
+    {
+        for (i = front; ; i = (i + 1) % MAX)
         {
-            if (front == -1)
-                printf("Queue is empty\n");
-            else
-            {
-                i = front;
+            printf("%d ", queue[i]);
 
-                while (1)
-                {
-                    printf("%d ", queue[i]);
-
-                    if (i == rear)
-                        break;
-
-                    i = (i + 1) % MAX;
-                }
-
-                printf("\n");
-            }
+            if (i == rear)
+                break;
         }
 
+        printf("\n");
+    }
+}
         else if (choice == 4)
             break;
 
